@@ -1,0 +1,27 @@
+{
+  "name": "cheatsheets-ja",
+  "version": "0.1.0",
+  "description": "Elm cheat sheet collection in Japanese",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "honkit serve ./src",
+    "make:script": "elm make --output scripts/lib/reader.js scripts/src/Reader.elm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lettenj61/cheatsheets-ja.git"
+  },
+  "keywords": [
+    "elm"
+  ],
+  "author": "lettenj61 <lettenj61@users.noreply.github.com>",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/lettenj61/cheatsheets-ja/issues"
+  },
+  "homepage": "https://github.com/lettenj61/cheatsheets-ja#readme",
+  "dependencies": {
+    "honkit": "^3.4.0"
+  }
+}
