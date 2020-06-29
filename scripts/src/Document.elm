@@ -160,7 +160,8 @@ writeType unn =
                 ]
     in
     String.join "\n"
-        [ toCodeBlock <| formatter unn
+        [ "#### `type " ++ unn.name ++ "`"
+        , toCodeBlock <| formatter unn
         , unn.comment
         ]
 
@@ -183,7 +184,7 @@ writeMember : Val -> String
 writeMember val =
     let
         formatter { name, type_ } =
-            "#### " ++ name ++ " : " ++ type_
+            "#### `" ++ name ++ " : " ++ type_ ++ "`"
 
         ( snippet, description ) =
             deconstructComments val.comment

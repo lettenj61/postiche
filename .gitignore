@@ -2,4 +2,5 @@ elm-stuff/
 node_modules/
 scripts/lib/*.js
 src/_book/
+src/api/
 target/
