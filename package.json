@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/lettenj61/cheatsheets-ja#readme",
   "dependencies": {
-    "honkit": "^3.4.0"
+    "honkit": "^3.6.0"
   }
 }
