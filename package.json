@@ -20,5 +20,12 @@
   "bugs": {
     "url": "https://github.com/lettenj61/postiche/issues"
   },
-  "homepage": "https://github.com/lettenj61/postiche#readme"
+  "homepage": "https://github.com/lettenj61/postiche#readme",
+  "devDependencies": {
+    "@vercel/ncc": "^0.33.4",
+    "typescript": "^4.6.3"
+  },
+  "volta": {
+    "node": "16.14.2"
+  }
 }

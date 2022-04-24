@@ -1,0 +1,22 @@
+lockfileVersion: 5.3
+
+specifiers:
+  '@vercel/ncc': ^0.33.4
+  typescript: ^4.6.3
+
+devDependencies:
+  '@vercel/ncc': 0.33.4
+  typescript: 4.6.3
+
+packages:
+
+  /@vercel/ncc/0.33.4:
+    resolution: {integrity: sha512-ln18hs7dMffelP47tpkaR+V5Tj6coykNyxJrlcmCormPqRQjB/Gv4cu2FfBG+PMzIfdZp2CLDsrrB1NPU22Qhg==}
+    hasBin: true
+    dev: true
+
+  /typescript/4.6.3:
+    resolution: {integrity: sha512-yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
