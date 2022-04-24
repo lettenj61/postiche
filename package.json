@@ -1,7 +1,7 @@
 {
-  "name": "cheatsheets-ja",
+  "name": "postiche",
   "version": "0.1.0",
-  "description": "Elm cheat sheet collection in Japanese",
+  "description": "Fake up documentation page from any Elm packages",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lettenj61/cheatsheets-ja.git"
+    "url": "git+https://github.com/lettenj61/postiche.git"
   },
   "keywords": [
     "elm"
@@ -18,10 +18,7 @@
   "author": "lettenj61 <lettenj61@users.noreply.github.com>",
   "license": "CC0-1.0",
   "bugs": {
-    "url": "https://github.com/lettenj61/cheatsheets-ja/issues"
+    "url": "https://github.com/lettenj61/postiche/issues"
   },
-  "homepage": "https://github.com/lettenj61/cheatsheets-ja#readme",
-  "dependencies": {
-    "honkit": "^3.6.0"
-  }
+  "homepage": "https://github.com/lettenj61/postiche#readme"
 }
