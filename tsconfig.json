@@ -1,6 +1,7 @@
 {
   "include": ["lib/*.ts"],
   "compilerOptions": {
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "Node"
   }
 }

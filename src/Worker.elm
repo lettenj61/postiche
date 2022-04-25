@@ -43,14 +43,14 @@ type Model
 
 
 type alias Config =
-    { specifier : String
+    { spec : String
     }
 
 
 configDecoder : JD.Decoder Config
 configDecoder =
     JD.map Config <|
-        JD.field "specifier" JD.string
+        JD.field "spec" JD.string
 
 
 type alias Bundle =
@@ -60,16 +60,29 @@ type alias Bundle =
     }
 
 
-encodeBundles : List Bundle -> Value
-encodeBundles =
-    JE.list
-        (\bundle ->
-            JE.object
-                [ ( "fqn", JE.string bundle.fqn )
-                , ( "slug", JE.string bundle.slug )
-                , ( "markdown", JE.string bundle.markdown )
-                ]
-        )
+type alias BundleOutput =
+    { bundle : List Bundle
+    , name : String
+    }
+
+
+encodeBundles : BundleOutput -> Value
+encodeBundles output =
+    JE.object
+        [ ( "name", JE.string output.name )
+        , ( "bundle"
+          , JE.list
+                (\bundle ->
+                    JE.object
+                        [ ( "fqn", JE.string bundle.fqn )
+                        , ( "slug", JE.string bundle.slug )
+                        , ( "markdown", JE.string bundle.markdown )
+                        ]
+                )
+                output.bundle
+          )
+        ]
+    
 
 
 bundleModule : Docs.Module -> Bundle
@@ -108,10 +121,10 @@ init : Value -> ( Model, Cmd Msg )
 init json =
     case JD.decodeValue configDecoder json of
         Ok config ->
-            case Pkg.fromString config.specifier of
+            case Pkg.fromString config.spec of
                 Just _ ->
                     ( Working config
-                    , docsFinder config.specifier
+                    , docsFinder config.spec
                     )
 
                 Nothing ->
@@ -147,13 +160,16 @@ update msg model =
                 }
             )
 
-        Working _ ->
+        Working config ->
             case msg of
                 GotModules json ->
                     case JD.decodeValue (JD.list Docs.decoder) json of
                         Ok docs ->
                             ( model
-                            , docsWriter <| encodeBundles <| List.map bundleModule docs
+                            , (docsWriter << encodeBundles)
+                                { name = config.spec
+                                , bundle = List.map bundleModule docs
+                                }
                             )
 
                         Err _ ->
