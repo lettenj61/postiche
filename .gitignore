@@ -1,6 +1,7 @@
-elm-stuff/
-node_modules/
-scripts/lib/*.js
-src/_book/
-src/api/
-target/
+bin/*
+elm-stuff/*
+node_modules/*
+output/*
+
+lib/*.js
+lib/*.json
