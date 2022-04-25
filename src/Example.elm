@@ -1,5 +1,6 @@
 module Example exposing (main)
 
+import Browser exposing (Document)
 import Elm.Docs as Docs exposing (Block(..), Module)
 import Html
 import Html.Attributes as Attrs
@@ -8,29 +9,65 @@ import Markdown
 import Renderer.Docs as Render
 
 
-main : Html.Html msg
+main : Program () Model msg
 main =
-    let
-        parseResult =
-            Decode.decodeString (Decode.list Docs.decoder) elmBytesDocsJson
+    Browser.document
+        { init = init
+        , view = view
+        , update =
+            \_ model -> ( model, Cmd.none )
+        , subscriptions = always Sub.none
+        }
 
+
+type Model
+    = Code (Result Decode.Error (List Module))
+
+
+init : () -> ( Model, Cmd msg )
+init _ =
+    ( (Code << Decode.decodeString decoder) elmBytesDocsJson
+    , Cmd.none
+    )
+
+
+decoder : Decode.Decoder (List Module)
+decoder =
+    Decode.list Docs.decoder
+
+
+view : Model -> Document msg
+view (Code result) =
+    let
         sections docs =
             List.concatMap printMarkdowns docs
-    in
-    case parseResult of
-        Ok docs ->
-            Html.div
-                [ Attrs.style "padding-block" "0.925rem"
-                , Attrs.style "padding-inline" "1.45em"
-                ]
-                [ Markdown.toHtml [] <|
-                    String.join "\n\n" (sections docs)
-                ]
 
-        Err decodeError ->
-            Html.h3
-                []
-                [ Decode.errorToString decodeError |> Html.text ]
+        content =
+            case result of
+                Ok docs ->
+                    Html.div
+                        [ Attrs.style "padding-block" "0.925rem"
+                        , Attrs.style "padding-inline" "1.45em"
+                        ]
+                        [ Markdown.toHtml [] <|
+                            String.join "\n\n" (sections docs)
+                        ]
+
+                Err decodeError ->
+                    Html.h3
+                        []
+                        [ Decode.errorToString decodeError |> Html.text ]
+    in
+    { title = "Elm Postiche Example"
+    , body =
+        [ Html.node "link"
+            [ Attrs.rel "stylesheet"
+            , Attrs.href "https://unpkg.com/@picocss/pico@1.5.0/css/pico.min.css"
+            ]
+            []
+        , content
+        ]
+    }
 
 
 printMarkdowns : Module -> List String
@@ -51,7 +88,7 @@ printMarkdowns mod =
                                 Just "TODO: alias"
 
                             ValueBlock v ->
-                                Just ("* " ++ v.name)
+                                Just (Render.printValue v)
 
                             _ ->
                                 Nothing

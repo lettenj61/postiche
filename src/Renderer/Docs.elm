@@ -3,7 +3,6 @@ module Renderer.Docs exposing (..)
 {-| Print tree as markdown
 -}
 
-import Elm.CodeGen as Gen
 import Elm.Docs as Docs
 import Elm.Pretty as ElmPretty
 import Pretty
@@ -14,10 +13,38 @@ type alias Element =
     Pretty.Doc ElmPretty.Tag
 
 
+type alias Section a =
+    { title : String
+    , prelude : Maybe String
+    , body : a -> Element
+    , comment : String
+    }
+
+
+
+-- MARKDOWN
+
+
 printUnion : Docs.Union -> String
 printUnion union =
-    defaultPrettyPrint prettyUnion union
-        |> appendComment union.comment
+    fromSection
+        union
+        { title = union.name
+        , prelude = Nothing
+        , body = prettyUnion
+        , comment = union.comment
+        }
+
+
+printValue : Docs.Value -> String
+printValue value =
+    fromSection
+        value
+        { title = value.name
+        , prelude = Nothing
+        , body = prettyValue
+        , comment = value.comment
+        }
 
 
 
@@ -26,15 +53,20 @@ printUnion union =
 
 prettyUnion : Docs.Union -> Element
 prettyUnion =
-    ElmPretty.prettyDeclaration defaultWidth << Transform.transformUnion
+    ElmPretty.prettyCustomType << Transform.transformUnion2
+
+
+prettyValue : Docs.Value -> Element
+prettyValue =
+    ElmPretty.prettySignature << Transform.transformValue
 
 
 
 -- PRINTER CONFIGURATIONS
 
 
-defaultPrettyPrint : (s -> Pretty.Doc t) -> s -> String
-defaultPrettyPrint printer tree =
+defaultPrinter : (s -> Pretty.Doc t) -> s -> String
+defaultPrinter printer tree =
     Pretty.pretty defaultWidth (printer tree)
         |> wrapCodeFences
 
@@ -60,3 +92,14 @@ wrapCodeFences body =
 appendComment : String -> String -> String
 appendComment comment doc =
     doc ++ "\n" ++ comment
+
+
+fromSection : a -> Section a -> String
+fromSection source { title, prelude, body, comment } =
+    [ Just <| "### " ++ title
+    , prelude
+    , Just <| defaultPrinter body source
+    , Just comment
+    ]
+        |> List.filterMap identity
+        |> String.join "\n"

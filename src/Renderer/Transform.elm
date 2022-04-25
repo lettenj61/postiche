@@ -1,5 +1,6 @@
 module Renderer.Transform exposing
-    ( transformUnion
+    ( transformUnion, transformUnion2
+    , transformValue
     , transformType
     )
 
@@ -11,7 +12,12 @@ module Renderer.Transform exposing
 
 ## Union
 
-@docs transformUnion
+@docs transformUnion, transformUnion2
+
+
+## Value
+
+@docs transformValue
 
 
 ## Type
@@ -22,6 +28,10 @@ module Renderer.Transform exposing
 
 import Elm.CodeGen as Gen
 import Elm.Docs as Docs
+import Elm.Syntax.Node as Node
+import Elm.Syntax.Range exposing (emptyRange)
+import Elm.Syntax.Signature as Sig
+import Elm.Syntax.Type as SyntaxType
 import Elm.Type as Type
 
 
@@ -34,6 +44,42 @@ transformUnion union =
         union.name
         union.args
         (transformTag union.name union.tags)
+
+
+{-| Construct tree from an `Union`.
+-}
+transformUnion2 : Docs.Union -> SyntaxType.Type
+transformUnion2 union =
+    { documentation = Nothing
+    , name = docNode union.name
+    , generics = union.args |> List.map docNode
+    , constructors = transformCtor2 union.name union.tags
+    }
+
+
+{-| -}
+transformCtor2 :
+    String
+    -> List ( String, List Type.Type )
+    -> List (Node.Node SyntaxType.ValueConstructor)
+transformCtor2 tname tags =
+    case tags of
+        [] ->
+            List.singleton <|
+                docNode
+                    { name = docNode tname
+                    , arguments = []
+                    }
+
+        variants ->
+            List.map
+                (\( tag, tparams ) ->
+                    docNode <|
+                        { name = docNode tag
+                        , arguments = List.map (docNode << transformType) tparams
+                        }
+                )
+                variants
 
 
 {-| -}
@@ -52,6 +98,13 @@ transformTag tname tags =
                         , List.map transformType tparams
                         )
                     )
+
+
+transformValue : Docs.Value -> Sig.Signature
+transformValue value =
+    Gen.signature
+        value.name
+        (transformType value.tipe)
 
 
 {-| Construct tree from a `Type`.
@@ -86,3 +139,8 @@ transformType tipe =
 
                 Nothing ->
                     Gen.recordAnn annotatedFields
+
+
+docNode : a -> Node.Node a
+docNode =
+    Node.Node emptyRange
