@@ -27,24 +27,35 @@ type alias Section a =
 
 printUnion : Docs.Union -> String
 printUnion union =
-    fromSection
-        union
-        { title = union.name
-        , prelude = Nothing
-        , body = prettyUnion
-        , comment = union.comment
-        }
+    union
+        |> fromSection
+            { title = union.name
+            , prelude = Nothing
+            , body = prettyUnion
+            , comment = union.comment
+            }
+
+
+printAlias : Docs.Alias -> String
+printAlias al =
+    al
+        |> fromSection
+            { title = al.name
+            , prelude = Nothing
+            , body = prettyAlias
+            , comment = al.comment
+            }
 
 
 printValue : Docs.Value -> String
 printValue value =
-    fromSection
-        value
-        { title = value.name
-        , prelude = Nothing
-        , body = prettyValue
-        , comment = value.comment
-        }
+    value
+        |> fromSection
+            { title = value.name |> toCode
+            , prelude = Nothing
+            , body = prettyValue
+            , comment = value.comment
+            }
 
 
 
@@ -53,7 +64,12 @@ printValue value =
 
 prettyUnion : Docs.Union -> Element
 prettyUnion =
-    ElmPretty.prettyCustomType << Transform.transformUnion2
+    ElmPretty.prettyCustomType << Transform.transformUnion
+
+
+prettyAlias : Docs.Alias -> Element
+prettyAlias =
+    ElmPretty.prettyTypeAlias << Transform.transformAlias
 
 
 prettyValue : Docs.Value -> Element
@@ -80,6 +96,11 @@ defaultWidth =
 -- HELPERS
 
 
+toCode : String -> String
+toCode elem =
+    "`" ++ elem ++ "`"
+
+
 wrapCodeFences : String -> String
 wrapCodeFences body =
     String.join "\n" <|
@@ -89,8 +110,8 @@ wrapCodeFences body =
         ]
 
 
-fromSection : a -> Section a -> String
-fromSection source { title, prelude, body, comment } =
+fromSection : Section a -> a -> String
+fromSection { title, prelude, body, comment } source =
     [ Just <| "### " ++ title
     , prelude
     , Just <| defaultPrinter body source

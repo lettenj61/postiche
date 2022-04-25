@@ -1,5 +1,6 @@
 module Renderer.Transform exposing
-    ( transformUnion, transformUnion2
+    ( transformUnion
+    , transformAlias
     , transformValue
     , transformType
     )
@@ -12,7 +13,12 @@ module Renderer.Transform exposing
 
 ## Union
 
-@docs transformUnion, transformUnion2
+@docs transformUnion
+
+
+## Alias
+
+@docs transformAlias
 
 
 ## Value
@@ -32,37 +38,28 @@ import Elm.Syntax.Node as Node
 import Elm.Syntax.Range exposing (emptyRange)
 import Elm.Syntax.Signature as Sig
 import Elm.Syntax.Type as SyntaxType
+import Elm.Syntax.TypeAlias exposing (TypeAlias)
 import Elm.Type as Type
 
 
 {-| Construct tree from an `Union`.
 -}
-transformUnion : Docs.Union -> Gen.Declaration
+transformUnion : Docs.Union -> SyntaxType.Type
 transformUnion union =
-    Gen.customTypeDecl
-        Nothing
-        union.name
-        union.args
-        (transformTag union.name union.tags)
-
-
-{-| Construct tree from an `Union`.
--}
-transformUnion2 : Docs.Union -> SyntaxType.Type
-transformUnion2 union =
     { documentation = Nothing
     , name = docNode union.name
     , generics = union.args |> List.map docNode
-    , constructors = transformCtor2 union.name union.tags
+    , constructors = transformTags union.name union.tags
     }
 
 
-{-| -}
-transformCtor2 :
+{-| Transform tags in `Union`s.
+-}
+transformTags :
     String
     -> List ( String, List Type.Type )
     -> List (Node.Node SyntaxType.ValueConstructor)
-transformCtor2 tname tags =
+transformTags tname tags =
     case tags of
         [] ->
             List.singleton <|
@@ -82,24 +79,19 @@ transformCtor2 tname tags =
                 variants
 
 
-{-| -}
-transformTag : String -> List ( String, List Type.Type ) -> List ( String, List Gen.TypeAnnotation )
-transformTag tname tags =
-    case tags of
-        [] ->
-            [ ( tname, [] )
-            ]
-
-        variants ->
-            variants
-                |> List.map
-                    (\( tag, tparams ) ->
-                        ( tag
-                        , List.map transformType tparams
-                        )
-                    )
+{-| Construct tree from an `Alias`.
+-}
+transformAlias : Docs.Alias -> TypeAlias
+transformAlias al =
+    { documentation = Nothing
+    , name = docNode al.name
+    , generics = List.map docNode al.args
+    , typeAnnotation = docNode <| transformType al.tipe
+    }
 
 
+{-| Construct tree from a `Value`.
+-}
 transformValue : Docs.Value -> Sig.Signature
 transformValue value =
     Gen.signature
