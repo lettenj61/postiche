@@ -89,11 +89,6 @@ wrapCodeFences body =
         ]
 
 
-appendComment : String -> String -> String
-appendComment comment doc =
-    doc ++ "\n" ++ comment
-
-
 fromSection : a -> Section a -> String
 fromSection source { title, prelude, body, comment } =
     [ Just <| "### " ++ title
