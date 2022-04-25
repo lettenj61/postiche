@@ -5,7 +5,7 @@ import Html
 import Html.Attributes as Attrs
 import Json.Decode as Decode
 import Markdown
-import Renderer.Markdown as Render
+import Renderer.Docs as Render
 
 
 main : Html.Html msg
@@ -48,7 +48,7 @@ printMarkdowns mod =
                                 Just (Render.printUnion u)
 
                             AliasBlock al ->
-                                Just (Render.printAlias al)
+                                Just "TODO: alias"
 
                             ValueBlock v ->
                                 Just ("* " ++ v.name)
