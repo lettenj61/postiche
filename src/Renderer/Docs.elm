@@ -29,7 +29,7 @@ printUnion : Docs.Union -> String
 printUnion union =
     union
         |> fromSection
-            { title = union.name
+            { title = "_type_ " ++ union.name
             , prelude = Nothing
             , body = prettyUnion
             , comment = union.comment
@@ -40,7 +40,7 @@ printAlias : Docs.Alias -> String
 printAlias al =
     al
         |> fromSection
-            { title = al.name
+            { title = "_type_ " ++ al.name
             , prelude = Nothing
             , body = prettyAlias
             , comment = al.comment

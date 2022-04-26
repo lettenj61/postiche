@@ -70,7 +70,7 @@ update msg model =
 fetchElmBytesDoc : Cmd Msg
 fetchElmBytesDoc =
     Http.get
-        { url = "https://package.elm-lang.org/packages/elm/bytes/1.0.8/docs.json"
+        { url = "./elm-bytes-docs.json"
         , expect =
             Http.expectJson
                 Fetch
@@ -92,8 +92,7 @@ view model =
             case model of
                 Code docs ->
                     Html.div
-                        [ Attrs.style "padding-block" "0.925rem"
-                        , Attrs.style "padding-inline" "1.45em"
+                        [ Attrs.class "markdown-section"
                         ]
                         [ Markdown.toHtml [] <|
                             String.join "\n\n" (sections docs)
@@ -113,9 +112,17 @@ view model =
     , body =
         [ Html.node "link"
             [ Attrs.rel "stylesheet"
-            , Attrs.href "https://unpkg.com/@picocss/pico@1.5.0/css/pico.min.css"
+            , Attrs.href "https://unpkg.com/docsify@4.12.2/themes/vue.css"
             ]
             []
+        , Html.node "style" []
+            [ (String.trim >> Html.text)
+                """
+                body:not(.ready) {
+                    overflow: initial;
+                }
+                """
+            ]
         , content
         ]
     }
@@ -140,7 +147,7 @@ printMarkdowns mod =
                     (\block ->
                         case block of
                             MarkdownBlock str ->
-                                Just str
+                                Just <| "- - - -\n\n" ++ str
 
                             UnionBlock u ->
                                 Just (Render.printUnion u)
