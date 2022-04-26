@@ -115,6 +115,7 @@ writeMarkdown mod =
                         Nothing
             )
         |> String.join "\n"
+        |> String.trim
 
 
 init : Value -> ( Model, Cmd Msg )
