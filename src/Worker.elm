@@ -100,7 +100,7 @@ writeMarkdown mod =
             (\block ->
                 case block of
                     MarkdownBlock str ->
-                        Just str
+                        Just (Render.printTopLevelMarkdown str)
 
                     UnionBlock u ->
                         Just (Render.printUnion u)

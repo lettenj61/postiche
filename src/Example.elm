@@ -147,7 +147,7 @@ printMarkdowns mod =
                     (\block ->
                         case block of
                             MarkdownBlock str ->
-                                Just <| "- - - -\n\n" ++ str
+                                Just (Render.printTopLevelMarkdown str)
 
                             UnionBlock u ->
                                 Just (Render.printUnion u)

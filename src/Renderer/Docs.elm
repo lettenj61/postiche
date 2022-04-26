@@ -1,4 +1,9 @@
-module Renderer.Docs exposing (..)
+module Renderer.Docs exposing
+    ( printTopLevelMarkdown
+    , printUnion
+    , printAlias
+    , printValue
+    )
 
 {-| Print tree as markdown
 -}
@@ -25,6 +30,14 @@ type alias Section a =
 -- MARKDOWN
 
 
+printTopLevelMarkdown : String -> String
+printTopLevelMarkdown md =
+    String.join "\n"
+        [ "----"
+        , md
+        ]
+
+
 printUnion : Docs.Union -> String
 printUnion union =
     union
@@ -40,7 +53,7 @@ printAlias : Docs.Alias -> String
 printAlias al =
     al
         |> fromSection
-            { title = "_type_ " ++ al.name
+            { title = "_type alias_ " ++ al.name
             , prelude = Nothing
             , body = prettyAlias
             , comment = al.comment
@@ -112,7 +125,7 @@ wrapCodeFences body =
 
 fromSection : Section a -> a -> String
 fromSection { title, prelude, body, comment } source =
-    [ Just <| "### " ++ title
+    [ Just <| "# " ++ title
     , prelude
     , Just <| defaultPrinter body source
     , Just comment
