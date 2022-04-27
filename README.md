@@ -1,4 +1,4 @@
-# postiche
+# elm-postiche-cli
 
 Generate unsound HTML from any Elm documentation metadata.
 

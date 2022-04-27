@@ -1,8 +1,12 @@
 {
-  "name": "postiche",
+  "name": "elm-postiche-cli",
   "version": "0.1.0",
   "description": "Fake up documentation page from any Elm packages",
-  "main": "index.js",
+  "files": [
+    "bin/postiche/template",
+    "bin/postiche/index.js"
+  ],
+  "bin": "./bin/postiche/index.js",
   "scripts": {
     "bundle": "ncc build -o bin/postiche lib/cli.ts",
     "make:elm": "elm make --optimize --output lib/worker.js src/Worker.elm"
@@ -14,8 +18,8 @@
   "keywords": [
     "elm"
   ],
-  "author": "lettenj61 <lettenj61@users.noreply.github.com>",
-  "license": "CC0-1.0",
+  "author": "lettenj61 <letitscalable+npm@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/lettenj61/postiche/issues"
   },
